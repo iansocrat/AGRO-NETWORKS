@@ -13,43 +13,42 @@ app.use(bodyparser.urlencoded({extended:true}));
 
 app.get("/",function(req,res){
     res.sendFile(__dirname+"/index.html");
+    res.sendFile(__dirname+"/signup.html");
+    
     
   
 
    
 });
 
-// app.post("/",function(req,res){
-//     const query=req.body.cityname;
-//     const apikey="674ba80f7c1cf20b9a8c7d9d3ea10f83";
-//     const unit= "metric"
-//     const url="https://api.openweathermap.org/data/2.5/weather?q="+query+"&appid="+apikey+"&units="+unit;
-//     https.get(url,function(response){
-//         console.log(response.statusCode);
-//         response.on("data",function(data){
-//         const weatherData=JSON.parse(data)
-//         const temp=weatherData.main.temp;
-//          const description=weatherData.weather[0].description;        
-//          const icon=weatherData.weather[0].icon;
-//          const imgurl="https://openweathermap.org/img/wn/"+icon+"@2x.png"
-//         console.log(weatherData );
-//         console.log(temp);
-//         console.log(description);
-//         res.write("<p>the tempetrature is "+ temp+"</p>");
-//         res.write("<h1>the description is "+description+"</h1>");
-//         res.write("<img src ="+imgurl+">") ;
-//         res.send();
+app.post("/discover",function(req,res){
+    const query=req.body.cityname;
+    const apikey="674ba80f7c1cf20b9a8c7d9d3ea10f83";
+    const unit= "metric"
+    const url="https://api.openweathermap.org/data/2.5/weather?q="+query+"&appid="+apikey+"&units="+unit;
+    https.get(url,function(response){
+        console.log(response.statusCode);
+        response.on("data",function(data){
+        const weatherData=JSON.parse(data)
+        const temp=weatherData.main.temp;
+         const description=weatherData.weather[0].description;        
+         const icon=weatherData.weather[0].icon;
+         const imgurl="https://openweathermap.org/img/wn/"+icon+"@2x.png"
+        console.log(weatherData );
+        console.log(temp);
+        console.log(description);
+        res.write("<p>the tempetrature is "+ temp+"</p>");
+        res.write("<h1>the description is "+description+"</h1>");
+        res.write("<img src ="+imgurl+">") ;
+        res.send();
 
-//         });
+        });
 
 
-//     })
+    });
      
-// });
-    
-app.get("/",function(req,res){
-    res.sendFile(__dirname+"/signup.html");
 });
+    
 
 
 
@@ -74,9 +73,15 @@ app.post("/",function(req,res){
     const url="https://us10.api.mailchimp.com/3.0/lists/8b32a51a69"; 
     const options= {
         method:"POST",
-        auth:"ian:1fd1bd46ba5d4127664a633bdcb34eb4-us10"
+        auth:"ian:f133fcd57830446f4a24a1c08b44704a1-us10"
     }
     const request= https.request(url,options,function(response){
+        if (response.statusCode===200){
+            res.sendFile(__dirname+"/webfil/success.html");
+        }
+        else{
+            res.sendFile(__dirname+"/webfil/failure.html");
+        }
         response.on("data",function(data){
             console.log(JSON.parse(data));
         })
@@ -89,13 +94,16 @@ app.post("/",function(req,res){
    
 
 });
+app.post("/failure",function(req,res){
+    res.redirect("/");
+})
 
 
 app.listen(3000,function(){
     console.log("Server is running on port 3000");
 });
 //  API keys
-// 1fd1bd46ba5d4127664a633bdcb34eb4-us10
+// f133fcd57830446f4a24a1c08b4470a1-us10
 // list id 
 //  8b32a51a69
 
